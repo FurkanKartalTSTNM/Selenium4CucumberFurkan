@@ -47,7 +47,7 @@ public class Hooks {
         if (key.isEmpty()) {
             System.out.println("local");
             System.setProperty("webdriver.chrome.driver", "web_driver/chromedriver");
-            driver = new ChromeDriver();
+            driver = new ChromeDriver(chromeOptions());
         } else {
             System.out.println("testinium");
             DesiredCapabilities capabilities = DesiredCapabilities.chrome();
