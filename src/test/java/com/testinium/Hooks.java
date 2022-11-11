@@ -39,31 +39,15 @@ public class Hooks {
 
         if (StringUtils.isNotEmpty(key)) {
             // testinium tarafından başlatıldığında
-            if (StringUtils.isNotEmpty(testID)) {
                 System.out.println("Testiniumda ayaga kalkti");
                 dc = DesiredCapabilities.chrome();
-                dc.setPlatform(Platform.WIN10);
                 dc.setCapability("testinium:testID", testID);
                 dc.setCapability("testinium:takesScreenshot", true);
                 dc.setCapability("testinium:recordsVideo", true);
                 // Cloud USERNAME:ACCESS_KEY
                 dc.setCapability("key", System.getProperty("key"));
                 driver = new RemoteWebDriver(new URL(hubCloudProd),dc);
-            } else {
-                System.out.println("Local Hubda ayaga kalkti");
-                // ----------------------------------------------------------------------------------------------------
-                String lastRetry = System.getenv("lastRetry");
-                String retryCount = System.getenv("retryCount");
-                System.out.println("MAKSAHIN lastRetry " + lastRetry);
-                System.out.println("MAKSAHIN retryCount " + retryCount);
-                if(lastRetry!=null && !lastRetry.isEmpty() && Boolean.parseBoolean(lastRetry)) {
-                    System.out.println("MAKSAHIN Test son kez tekrarlı çalışıyor!");
-                    dc.setCapability("retryWithScreenshots", "true");
-                }
-                // ----------------------------------------------------------------------------------------------------
-                dc.setCapability("key", key);
-                driver = new RemoteWebDriver(new URL(hubLocal), dc);
-            }
+
         } else {
             // test local'den testinium'suz başlatıldığında
             /*
