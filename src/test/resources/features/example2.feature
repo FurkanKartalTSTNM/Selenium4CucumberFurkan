@@ -1,13 +1,13 @@
 Feature: example2
 
-  Scenario: Google Testinium Search
+  Scenario: Google Testinium Search1
     * "http://www.google.com/" sayfasina git
     * "txtInput" elementine "testinium" degerini yaz
     * "txtInput" elementine "ENTER" key gonder
     * "h3Check" elementinin bulundugunu kontrol et
 
 
-  Scenario: Yemeksepeti1
+  Scenario: Yemeksepeti2
     * "https://www.yemeksepeti1.com/" sayfasina git
     * "plate34" elementine tikla
     * "areaSelector" elementinin bulundugunu kontrol et
@@ -16,7 +16,7 @@ Feature: example2
     * "searchBox" elementinin bulundugunu kontrol et
 
     @aegon
-  Scenario: Aegon
+  Scenario: Aegon3
     * "https://www.aegon.com1.tr/ana-sayfa/" sayfasina git
     * "tiklayiniz" elementine tikla
     * "checkHayat" elementinin bulundugunu kontrol et
