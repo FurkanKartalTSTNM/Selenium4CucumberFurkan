@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Hooks {
 
-    public String URL = "http://127.0.0.1:4444/wd/hub";
+    public String URL = "https://hubclouddev.testinium.com/wd/hub";
     protected static WebDriver driver;
     protected static Actions actions;
 
@@ -43,48 +43,22 @@ public class Hooks {
 
     @Before
     public void beforeTest() throws MalformedURLException {
-        try {
-            if (StringUtils.isEmpty(System.getenv("key"))) {
-                System.out.println("Lokalde ayaga kalkacak");
-
-                if ("win".equalsIgnoreCase(selectPlatform)) {
-                    if ("chrome".equalsIgnoreCase(browserName)) {
-                        driver = new ChromeDriver(chromeOptions());
-                        driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
-                    } else if ("firefox".equalsIgnoreCase(browserName)) {
-                        driver = new FirefoxDriver(firefoxOptions());
-                        driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
-                    }
-                } else if ("mac".equalsIgnoreCase(selectPlatform)) {
-                    if ("chrome".equalsIgnoreCase(browserName)) {
-                        driver = new ChromeDriver(chromeOptions());
-                        driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
-                    } else if ("firefox".equalsIgnoreCase(browserName)) {
-                        driver = new FirefoxDriver(firefoxOptions());
-                        driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
-                    }
-                    actions = new Actions(driver);
-                }
-
-            } else {
-                System.out.println("Testiniumda ayaga kalkacak");
-                ChromeOptions options = new ChromeOptions();
-                capabilities = DesiredCapabilities.chrome();
-                options.setExperimentalOption("w3c", false);
-                options.addArguments("disable-translate");
-                options.addArguments("--disable-notifications");
-                options.addArguments("--start-fullscreen");
-                Map<String, Object> prefs = new HashMap<>();
-                options.setExperimentalOption("prefs", prefs);
-                capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-                capabilities.setCapability("key", System.getenv("key"));
-                browserName = System.getenv("browser");
-                driver = new RemoteWebDriver(new URL("https://hubclouddev.testinium.com/wd/hub"), capabilities);
-                actions = new Actions(driver);
+        String key = System.getProperty("key", "");
+        if (key.isEmpty()) {
+            System.out.println("local");
+            System.setProperty("webdriver.chrome.driver", "web_driver/chromedriver");
+            driver = new ChromeDriver();
+        } else {
+            System.out.println("testinium");
+            DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+            capabilities.setCapability("key", System.getProperty("key"));
+            try {
+                driver = new RemoteWebDriver(new URL(URL), capabilities);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         }
+
 
     }
 
