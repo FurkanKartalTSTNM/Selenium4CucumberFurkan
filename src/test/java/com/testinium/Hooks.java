@@ -45,6 +45,7 @@ public class Hooks {
     public void beforeTest() throws MalformedURLException {
         try {
             if (StringUtils.isEmpty(System.getenv("key"))) {
+                System.out.println("Lokalde ayaga kalkacak");
 
                 if ("win".equalsIgnoreCase(selectPlatform)) {
                     if ("chrome".equalsIgnoreCase(browserName)) {
