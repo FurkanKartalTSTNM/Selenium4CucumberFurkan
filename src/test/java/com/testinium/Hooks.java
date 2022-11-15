@@ -17,6 +17,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -50,7 +51,10 @@ public class Hooks {
             driver = new ChromeDriver(chromeOptions());
         } else {
             System.out.println("testinium");
-            DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+            DesiredCapabilities capabilities = new DesiredCapabilities();
+            capabilities.setCapability(CapabilityType.PLATFORM, "WIN10");
+            capabilities.setCapability(CapabilityType.BROWSER_NAME, "chrome");
+            capabilities.setCapability(CapabilityType.VERSION, "LATEST");
             capabilities.setCapability("key", System.getProperty("key"));
             try {
                 driver = new RemoteWebDriver(new URL(URL), capabilities);
