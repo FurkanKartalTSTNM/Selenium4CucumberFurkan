@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Hooks {
 
-    public String URL = "https://hubclouddev.testinium.com/wd/hub";
+    public String URL = "http://hub.testinium.io/wd/hub";
     protected static WebDriver driver;
     protected static Actions actions;
 
