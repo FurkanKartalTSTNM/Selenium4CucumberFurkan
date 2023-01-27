@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Hooks {
 
-    public String URL = "http://hub.testinium.io/wd/hub";
+    public String hubURL = "http://hub.testinium.io/wd/hub";
     protected static WebDriver driver;
     protected static Actions actions;
 
@@ -33,13 +33,6 @@ public class Hooks {
     ChromeOptions chromeOptions;
 
     FirefoxOptions firefoxOptions;
-
-    private static final String hubCloudDev = "https://hubclouddev.testinium.com/wd/hub";
-    private static final String hubLocal = "http://localhost:4444/wd/hub";
-    private static final String hubCloudProd = "https://hubclouddev.testinium.com/wd/hub";
-
-    String browserName = "chrome";
-    String selectPlatform = "win";
 
     @Before
     public void beforeTest() throws MalformedURLException {
@@ -49,11 +42,11 @@ public class Hooks {
             System.setProperty("webdriver.chrome.driver", "web_driver/chromedriver");
             driver = new ChromeDriver(chromeOptions());
         } else {
-            System.out.println("testinium");
+            System.out.println("testinium ortaminda baslatiliyor");
             DesiredCapabilities capabilities = DesiredCapabilities.chrome();
             capabilities.setCapability("key", System.getProperty("key"));
             try {
-                driver = new RemoteWebDriver(new URL(URL), capabilities);
+                driver = new RemoteWebDriver(new URL(hubURL), capabilities);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
