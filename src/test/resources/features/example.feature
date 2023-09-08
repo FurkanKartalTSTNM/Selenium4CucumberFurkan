@@ -1,6 +1,6 @@
 Feature: Online Process
 
-  @Test
+  @deneme
   Scenario: Google Testinium Search
     * "https://account.testinium.com/uaa/login" sayfasina git
     * "txtInput" elementine "testinium" degerini yaz
