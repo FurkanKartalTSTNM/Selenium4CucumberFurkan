@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Hooks {
 
-    public String hubURL = "http://hub.testinium.io/wd/hub";
+    public String hubURL = "http://host.docker.internal:4444/wd/hub";
     protected static WebDriver driver;
     protected static Actions actions;
 
