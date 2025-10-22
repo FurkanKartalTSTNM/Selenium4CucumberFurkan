@@ -1,5 +1,6 @@
 package com.testinium;
 
+import com.testinium.driver.TestiniumSeleniumDriver;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import org.openqa.selenium.WebDriver;
@@ -40,12 +41,12 @@ public class Hooks {
                 case "firefox" -> {
                     FirefoxOptions options = firefoxOptions();
                     options.setCapability("key", key);
-                    driver = new RemoteWebDriver(grid, options);
+                    driver = new TestiniumSeleniumDriver(grid, options);
                 }
                 default -> {
                     ChromeOptions options = chromeOptions();
                     options.setCapability("key", key);
-                    driver = new RemoteWebDriver(grid, options);
+                    driver = new TestiniumSeleniumDriver(grid, options);
                 }
             }
         }
