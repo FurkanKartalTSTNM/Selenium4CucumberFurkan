@@ -1,5 +1,6 @@
 package com.testinium;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -35,8 +36,11 @@ public class Steps {
 
     public Steps() {
         this.webDriver = Hooks.getWebDriver();
-        this.webDriverWait = new WebDriverWait(webDriver, timeOut, sleepTime);
-        this.actions = new Actions(webDriver);
+        this.webDriverWait = new WebDriverWait(
+                webDriver,
+                Duration.ofSeconds(timeOut),
+                Duration.ofMillis(sleepTime)
+        );        this.actions = new Actions(webDriver);
     }
 
     private void hover(String key) {
@@ -117,7 +121,7 @@ public class Steps {
     WebElement findElement(String key) {
         ElementInfo elementInfo = StoreHelper.INSTANCE.findElementInfoByKey(key);
         By infoParam = ElementHelper.getElementInfoToBy(elementInfo);
-        WebDriverWait webDriverWait = new WebDriverWait(webDriver, 60);
+        WebDriverWait webDriverWait = new WebDriverWait(webDriver, Duration.ofSeconds(60));
         WebElement webElement = webDriverWait
                 .until(ExpectedConditions.presenceOfElementLocated(infoParam));
         ((JavascriptExecutor) webDriver).executeScript(
