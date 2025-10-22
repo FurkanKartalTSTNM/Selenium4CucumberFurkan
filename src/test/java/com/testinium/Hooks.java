@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.testinium.driver.TestiniumSeleniumDriver;
 import io.cucumber.java.Before;
 import io.cucumber.java.After;
 import org.apache.commons.lang3.StringUtils;
@@ -46,7 +47,7 @@ public class Hooks {
             DesiredCapabilities capabilities = DesiredCapabilities.chrome();
             capabilities.setCapability("key", System.getProperty("key"));
             try {
-                driver = new RemoteWebDriver(new URL(hubURL), capabilities);
+                driver = new TestiniumSeleniumDriver(new URL(hubURL), capabilities);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }

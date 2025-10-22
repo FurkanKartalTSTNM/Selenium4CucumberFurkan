@@ -11,7 +11,7 @@
     <!-- VERSIONS -->
     <maven.complier.version>3.7.0</maven.complier.version>
     <java.version>1.8</java.version>
-    <selenium.java.version>3.141.59</selenium.java.version>
+    <selenium.java.version>4.36.0</selenium.java.version>
     <commons.lang3.version>3.5</commons.lang3.version>
     <cucumber.junit.version>6.8.1</cucumber.junit.version>
     <cucumber.java8.version>6.8.1</cucumber.java8.version>
@@ -61,6 +61,12 @@
       <artifactId>groovy-all</artifactId>
       <version>${grovvy.all.version}</version>
     </dependency>
+
+      <dependency>
+          <groupId>com.testinium</groupId>
+          <artifactId>testinium-selenium4-driver</artifactId>
+          <version>0.0.0.19-SNAPSHOT</version>
+      </dependency>
   </dependencies>
 
   <build>
