@@ -1,28 +1,19 @@
 package com.testinium;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.testinium.driver.TestiniumSeleniumDriver;
-import io.cucumber.java.Before;
 import io.cucumber.java.After;
-import org.apache.commons.lang3.StringUtils;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Platform;
+import io.cucumber.java.Before;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Hooks {
 
@@ -30,71 +21,94 @@ public class Hooks {
     protected static WebDriver driver;
     protected static Actions actions;
 
-    DesiredCapabilities capabilities;
-    ChromeOptions chromeOptions;
-
-    FirefoxOptions firefoxOptions;
-
     @Before
     public void beforeTest() throws MalformedURLException {
         String key = System.getProperty("key", "");
+        String browser = System.getProperty("browser", "chrome").toLowerCase();
+
         if (key.isEmpty()) {
             System.out.println("local");
-            System.setProperty("webdriver.chrome.driver", "web_driver/chromedriver");
-            driver = new ChromeDriver(chromeOptions());
+            switch (browser) {
+                case "firefox" -> driver = new FirefoxDriver(firefoxOptions());
+                default -> driver = new ChromeDriver(chromeOptions());
+            }
         } else {
             System.out.println("testinium ortaminda baslatiliyor");
-            DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-            capabilities.setCapability("key", System.getProperty("key"));
-            try {
-                driver = new TestiniumSeleniumDriver(new URL(hubURL), capabilities);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+            URL grid = new URL(hubURL);
+
+            switch (browser) {
+                case "firefox" -> {
+                    FirefoxOptions options = firefoxOptions();
+                    options.setCapability("key", key);
+                    driver = new RemoteWebDriver(grid, options);
+                }
+                default -> {
+                    ChromeOptions options = chromeOptions();
+                    options.setCapability("key", key);
+                    driver = new RemoteWebDriver(grid, options);
+                }
             }
         }
 
-
-    }
-
-    public FirefoxOptions firefoxOptions() {
-        FirefoxOptions firefoxOptions = new FirefoxOptions();
-        capabilities = DesiredCapabilities.firefox();
-        Map<String, Object> prefs = new HashMap<>();
-        prefs.put("profile.default_content_setting_values.notifications", 2);
-        firefoxOptions.addArguments("--kiosk");
-        firefoxOptions.addArguments("--disable-notifications");
-        firefoxOptions.addArguments("--start-fullscreen");
-        FirefoxProfile profile = new FirefoxProfile();
-        capabilities.setCapability(FirefoxDriver.PROFILE, profile);
-        capabilities.setCapability("marionette", true);
-        firefoxOptions.merge(capabilities);
-        System.setProperty("webdriver.gecko.driver", "web_driver/geckodriver");
-        return firefoxOptions;
-
+        // (İsteğe bağlı) Actions kullanacaksan hazırla
+        actions = new Actions(driver);
     }
 
     @After
     public void afterTest() {
-        if(driver!=null) {
+        if (driver != null) {
             driver.quit();
+            driver = null;
+            actions = null;
         }
-    }
-
-    public ChromeOptions chromeOptions() {
-        chromeOptions = new ChromeOptions();
-        capabilities = DesiredCapabilities.chrome();
-        Map<String, Object> prefs = new HashMap<String, Object>();
-        prefs.put("profile.default_content_setting_values.notifications", 2);
-        chromeOptions.setExperimentalOption("prefs", prefs);
-        chromeOptions.addArguments("--kiosk");
-        chromeOptions.addArguments("--disable-notifications");
-        chromeOptions.addArguments("--start-fullscreen");
-        System.setProperty("webdriver.chrome.driver", "web_driver/chromedriver.exe");
-        chromeOptions.merge(capabilities);
-        return chromeOptions;
     }
 
     public static WebDriver getWebDriver() {
         return driver;
+    }
+
+    // -------- Options Builders --------
+
+    public ChromeOptions chromeOptions() {
+        ChromeOptions options = new ChromeOptions();
+
+        // Bildirimleri kapatma vb. prefs
+        Map<String, Object> prefs = new HashMap<>();
+        prefs.put("profile.default_content_setting_values.notifications", 2);
+        options.setExperimentalOption("prefs", prefs);
+
+        // Ortak argümanlar
+        options.addArguments("--disable-notifications");
+        options.addArguments("--start-fullscreen");
+        // CI/container ortamları için faydalı:
+        options.addArguments("--disable-gpu");
+        options.addArguments("--no-sandbox");
+
+        // Headless istersen: -Dheadless=true
+        if (Boolean.parseBoolean(System.getProperty("headless", "false"))) {
+            options.addArguments("--headless=new");
+        }
+
+        options.setAcceptInsecureCerts(true);
+        return options;
+    }
+
+    public FirefoxOptions firefoxOptions() {
+        FirefoxOptions options = new FirefoxOptions();
+
+        // Bildirimleri kapatma
+        options.addPreference("dom.webnotifications.enabled", false);
+
+        // Tam ekran
+        options.addArguments("--kiosk");           // mac/linux
+        options.addArguments("--start-fullscreen");// cross-platform
+
+        // Headless istersen: -Dheadless=true
+        if (Boolean.parseBoolean(System.getProperty("headless", "false"))) {
+            options.addArguments("-headless");
+        }
+
+        options.setAcceptInsecureCerts(true);
+        return options;
     }
 }
